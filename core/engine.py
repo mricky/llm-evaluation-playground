@@ -18,7 +18,7 @@ GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "")
 async def call_ollama(
     prompt: str,
     model: str = "llama3:latest",
-    timeout_sec: float = 60.0
+    timeout_sec: float = 120.0
 ) -> Dict[str, Any]:
     """Asynchronously calls local Ollama instance."""
     start_time = time.perf_counter()
@@ -35,6 +35,10 @@ async def call_ollama(
             if resp.status_code == 200:
                 data = resp.json()
                 text = data.get("response", "")
+                # If DeepSeek R1 returned thinking reasoning block, include it cleanly
+                thinking = data.get("thinking", "")
+                if thinking:
+                    text = f"<think>\n{thinking.strip()}\n</think>\n\n{text}"
                 eval_count = data.get("eval_count", len(text.split()))
                 return {
                     "model": model,
@@ -55,6 +59,17 @@ async def call_ollama(
                     "tokens_or_words": 0,
                     "error": f"Ollama HTTP {resp.status_code}: {resp.text}"
                 }
+    except httpx.TimeoutException:
+        elapsed_ms = round((time.perf_counter() - start_time) * 1000, 2)
+        return {
+            "model": model,
+            "provider": "ollama (local)",
+            "status": "timeout",
+            "text": "",
+            "latency_ms": elapsed_ms,
+            "tokens_or_words": 0,
+            "error": f"Ollama timed out ({timeout_sec}s). The model '{model}' may be too large to load into available system RAM."
+        }
     except Exception as e:
         elapsed_ms = round((time.perf_counter() - start_time) * 1000, 2)
         return {
