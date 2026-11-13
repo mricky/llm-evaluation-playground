@@ -189,7 +189,7 @@ async def api_webhook(req: CompareRequest):
 
 if __name__ == "__main__":
     import uvicorn
-    port = int(os.getenv("PORT", 8000))
+    port = int(os.getenv("PORT", 8088))
     host = os.getenv("HOST", "0.0.0.0")
     print(f"🚀 LLM Eval Arena running on http://{host}:{port}")
     uvicorn.run("app:app", host=host, port=port, reload=True)

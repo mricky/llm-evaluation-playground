@@ -100,7 +100,7 @@ cp .env.example .env
 ```bash
 python app.py
 ```
-Open **`http://localhost:8000`** in your browser to start comparing models and calibrating your evaluation precision!
+Open **`http://localhost:8088`** in your browser to start comparing models and calibrating your evaluation precision!
 
 ---
 
