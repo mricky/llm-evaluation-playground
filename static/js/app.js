@@ -93,11 +93,50 @@ document.addEventListener('DOMContentLoaded', () => {
   initSliders();
   initWinnerButtons();
   initPresets();
+  initCopyButtons();
   initArenaRun();
   initSaveEvaluation();
   initTrainerMode();
   initHistoryTab();
 });
+
+function initCopyButtons() {
+  const copyBtns = document.querySelectorAll('.copy-btn');
+  copyBtns.forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const targetId = btn.dataset.target;
+      const targetEl = document.getElementById(targetId);
+      if (!targetEl) return;
+
+      const text = targetEl.innerText.trim();
+      if (!text || text.startsWith('Awaiting')) {
+        showToast('Nothing to copy yet!', 'error');
+        return;
+      }
+
+      try {
+        await navigator.clipboard.writeText(text);
+        const originalText = btn.innerText;
+        btn.innerText = 'Copied! ✓';
+        btn.classList.add('copied');
+        showToast('Response copied to clipboard!');
+        setTimeout(() => {
+          btn.innerText = originalText;
+          btn.classList.remove('copied');
+        }, 2000);
+      } catch (err) {
+        // Fallback for clipboard API
+        const tempTextarea = document.createElement('textarea');
+        tempTextarea.value = text;
+        document.body.appendChild(tempTextarea);
+        tempTextarea.select();
+        document.execCommand('copy');
+        document.body.removeChild(tempTextarea);
+        showToast('Response copied to clipboard!');
+      }
+    });
+  });
+}
 
 function initPresets() {
   const btns = document.querySelectorAll('.preset-btn');

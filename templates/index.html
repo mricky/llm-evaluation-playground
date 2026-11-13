@@ -46,18 +46,33 @@
         <div class="controls-bar">
           <div class="model-selects">
             <div class="select-field">
-              <label>Model A (Local Ollama):</label>
+              <label>Model A:</label>
               <select id="model-a-select">
-                <option value="llama3:latest">llama3:latest (8B)</option>
-                <option value="qwen2.5-coder:7b">qwen2.5-coder:7b</option>
-                <option value="gemma4:26b">gemma4:26b</option>
+                <optgroup label="⚡ Local Models (Ollama)">
+                  <option value="llama3:latest" selected>Llama 3 (8B Meta)</option>
+                  <option value="deepseek-r1:7b">DeepSeek-R1 (7B Reasoning)</option>
+                  <option value="qwen2.5-coder:7b">Qwen 2.5 Coder (7B Alibaba)</option>
+                  <option value="gemma4:26b">Gemma 4 (26B Google)</option>
+                </optgroup>
+                <optgroup label="☁️ Cloud Models (Google)">
+                  <option value="gemini-3-flash-preview">Gemini 3 Flash</option>
+                  <option value="gemini-3.5-flash-lite">Gemini 3.5 Flash Lite</option>
+                </optgroup>
               </select>
             </div>
             <div class="select-field">
-              <label>Model B (Google Gemini):</label>
+              <label>Model B:</label>
               <select id="model-b-select">
-                <option value="gemini-3-flash-preview" selected>gemini-3-flash-preview (Recommended)</option>
-                <option value="gemini-3.5-flash-lite">gemini-3.5-flash-lite (Stable)</option>
+                <optgroup label="☁️ Cloud Models (Google)">
+                  <option value="gemini-3-flash-preview" selected>Gemini 3 Flash</option>
+                  <option value="gemini-3.5-flash-lite">Gemini 3.5 Flash Lite</option>
+                </optgroup>
+                <optgroup label="⚡ Local Models (Ollama)">
+                  <option value="deepseek-r1:7b">DeepSeek-R1 (7B Reasoning)</option>
+                  <option value="qwen2.5-coder:7b">Qwen 2.5 Coder (7B Alibaba)</option>
+                  <option value="llama3:latest">Llama 3 (8B Meta)</option>
+                  <option value="gemma4:26b">Gemma 4 (26B Google)</option>
+                </optgroup>
               </select>
             </div>
           </div>
@@ -71,12 +86,13 @@
         <div class="model-card" id="card-model-a">
           <div class="card-header">
             <div>
-              <span class="model-badge local">LOCAL OLLAMA</span>
+              <span class="model-badge local" id="badge-model-a">MODEL A</span>
               <h3 id="display-model-a-title">llama3:latest</h3>
             </div>
             <div class="meta-stats">
               <span class="stat-tag" id="stat-latency-a">Latency: -- ms</span>
               <span class="stat-tag" id="stat-words-a">Tokens: --</span>
+              <button type="button" class="copy-btn" data-target="output-model-a" title="Copy to clipboard">📋 Copy</button>
             </div>
           </div>
           <div class="response-body">
@@ -88,12 +104,13 @@
         <div class="model-card" id="card-model-b">
           <div class="card-header">
             <div>
-              <span class="model-badge cloud">CLOUD GEMINI</span>
+              <span class="model-badge cloud" id="badge-model-b">MODEL B</span>
               <h3 id="display-model-b-title">gemini-3-flash-preview</h3>
             </div>
             <div class="meta-stats">
               <span class="stat-tag" id="stat-latency-b">Latency: -- ms</span>
               <span class="stat-tag" id="stat-words-b">Tokens: --</span>
+              <button type="button" class="copy-btn" data-target="output-model-b" title="Copy to clipboard">📋 Copy</button>
             </div>
           </div>
           <div class="response-body">

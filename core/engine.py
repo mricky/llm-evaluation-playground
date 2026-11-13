@@ -151,6 +151,14 @@ async def call_gemini(
     }
 
 
+async def dispatch_model_call(prompt: str, model: str) -> Dict[str, Any]:
+    """Smart router: routes to Gemini if model starts with 'gemini-', else Ollama."""
+    if model.startswith("gemini-"):
+        return await call_gemini(prompt, model=model)
+    else:
+        return await call_ollama(prompt, model=model)
+
+
 async def run_arena_comparison(
     prompt: str,
     model_a: str = "llama3:latest",
@@ -158,8 +166,8 @@ async def run_arena_comparison(
 ) -> Dict[str, Any]:
     """Runs Model A and Model B concurrently using asyncio.gather."""
     res_a, res_b = await asyncio.gather(
-        call_ollama(prompt, model=model_a),
-        call_gemini(prompt, model=model_b),
+        dispatch_model_call(prompt, model=model_a),
+        dispatch_model_call(prompt, model=model_b),
         return_exceptions=True
     )
     
