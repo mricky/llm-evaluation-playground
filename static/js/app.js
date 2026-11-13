@@ -218,6 +218,15 @@ function getAssessmentData(model) {
   return data;
 }
 
+function countWords(str) {
+  if (!str) return 0;
+  let clean = str;
+  if (clean.includes('</think>')) {
+    clean = clean.split('</think>').pop();
+  }
+  return clean.trim().split(/\s+/).filter(Boolean).length;
+}
+
 // Winner selector buttons
 function initWinnerButtons() {
   const btns = document.querySelectorAll('.winner-btn');
@@ -267,19 +276,27 @@ function initArenaRun() {
       // Render Model A
       if (data.model_a.status === 'success') {
         document.getElementById('output-model-a').innerText = data.model_a.text;
-        document.getElementById('stat-latency-a').innerText = `${data.model_a.latency_ms} ms`;
-        document.getElementById('stat-words-a').innerText = `Tokens: ${data.model_a.tokens_or_words}`;
+        document.getElementById('stat-latency-a').innerText = `⏱️ ${data.model_a.latency_ms} ms`;
+        const wordsA = data.model_a.word_count !== undefined ? data.model_a.word_count : countWords(data.model_a.text);
+        document.getElementById('stat-words-a').innerText = `📝 Words: ${wordsA}`;
+        document.getElementById('stat-tokens-a').innerText = `🪙 Tokens: ${data.model_a.tokens || data.model_a.tokens_or_words || wordsA}`;
       } else {
         document.getElementById('output-model-a').innerText = `Error: ${data.model_a.error || 'Failed'}`;
+        document.getElementById('stat-words-a').innerText = `📝 Words: --`;
+        document.getElementById('stat-tokens-a').innerText = `🪙 Tokens: --`;
       }
 
       // Render Model B
       if (data.model_b.status === 'success' || data.model_b.status === 'mock_success') {
         document.getElementById('output-model-b').innerText = data.model_b.text;
-        document.getElementById('stat-latency-b').innerText = `${data.model_b.latency_ms} ms`;
-        document.getElementById('stat-words-b').innerText = `Tokens: ${data.model_b.tokens_or_words}`;
+        document.getElementById('stat-latency-b').innerText = `⏱️ ${data.model_b.latency_ms} ms`;
+        const wordsB = data.model_b.word_count !== undefined ? data.model_b.word_count : countWords(data.model_b.text);
+        document.getElementById('stat-words-b').innerText = `📝 Words: ${wordsB}`;
+        document.getElementById('stat-tokens-b').innerText = `🪙 Tokens: ${data.model_b.tokens || data.model_b.tokens_or_words || wordsB}`;
       } else {
         document.getElementById('output-model-b').innerText = `Error: ${data.model_b.error || 'Failed'}`;
+        document.getElementById('stat-words-b').innerText = `📝 Words: --`;
+        document.getElementById('stat-tokens-b').innerText = `🪙 Tokens: --`;
       }
 
       showToast('Models compared successfully!');
@@ -381,9 +398,11 @@ function initTrainerMode() {
 
     document.getElementById('trainer-model-a-name').innerText = currentTrainerCase.model_a_name;
     document.getElementById('trainer-model-a-resp').innerText = currentTrainerCase.model_a_response;
+    document.getElementById('trainer-words-a').innerText = `📝 Words: ${countWords(currentTrainerCase.model_a_response)}`;
 
     document.getElementById('trainer-model-b-name').innerText = currentTrainerCase.model_b_name;
     document.getElementById('trainer-model-b-resp').innerText = currentTrainerCase.model_b_response;
+    document.getElementById('trainer-words-b').innerText = `📝 Words: ${countWords(currentTrainerCase.model_b_response)}`;
 
     document.getElementById('trainer-results-card').style.display = 'none';
     workspace.style.display = 'block';

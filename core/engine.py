@@ -34,18 +34,25 @@ async def call_ollama(
             
             if resp.status_code == 200:
                 data = resp.json()
-                text = data.get("response", "")
-                # If DeepSeek R1 returned thinking reasoning block, include it cleanly
+                raw_response = data.get("response", "")
                 thinking = data.get("thinking", "")
                 if thinking:
-                    text = f"<think>\n{thinking.strip()}\n</think>\n\n{text}"
+                    text = f"<think>\n{thinking.strip()}\n</think>\n\n{raw_response}"
+                else:
+                    text = raw_response
+                
+                # Calculate word count of the actual response (ignoring internal thinking tokens)
+                word_count = len([w for w in raw_response.split() if w])
                 eval_count = data.get("eval_count", len(text.split()))
+                
                 return {
                     "model": model,
                     "provider": "ollama (local)",
                     "status": "success",
                     "text": text,
                     "latency_ms": elapsed_ms,
+                    "word_count": word_count,
+                    "tokens": eval_count,
                     "tokens_or_words": eval_count,
                     "error": None
                 }
@@ -134,13 +141,17 @@ async def call_gemini(
                     if resp.status_code == 200:
                         data = resp.json()
                         text = data["candidates"][0]["content"]["parts"][0]["text"]
+                        word_count = len([w for w in text.split() if w])
+                        tokens = data.get("usageMetadata", {}).get("candidatesTokenCount", word_count)
                         return {
                             "model": attempt_model,
                             "provider": "gemini (cloud)",
                             "status": "success",
                             "text": text,
                             "latency_ms": elapsed_ms,
-                            "tokens_or_words": len(text.split()),
+                            "word_count": word_count,
+                            "tokens": tokens,
+                            "tokens_or_words": tokens,
                             "error": None
                         }
                     elif resp.status_code in [503, 429]:
