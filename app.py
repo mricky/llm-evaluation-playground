@@ -60,7 +60,7 @@ init_db()
 class CompareRequest(BaseModel):
     prompt: str
     model_a: str = "llama3:latest"
-    model_b: str = "gemini-1.5-flash"
+    model_b: str = "gemini-3-flash-preview"
 
 
 class TrainerSubmitRequest(BaseModel):
