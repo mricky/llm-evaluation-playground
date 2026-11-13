@@ -268,6 +268,8 @@ function initSaveEvaluation() {
       return;
     }
 
+    const justification = document.getElementById('score-justification').value.trim();
+
     const payload = {
       prompt,
       model_a_name: modelA,
@@ -277,7 +279,7 @@ function initSaveEvaluation() {
       assessment_a: getAssessmentData('a'),
       assessment_b: getAssessmentData('b'),
       winner: selectedWinner,
-      tags: ['arena', 'manual-eval']
+      tags: ['arena', 'manual-eval', ...(justification ? [`SCORE:${justification}`] : [])]
     };
 
     saveBtn.disabled = true;

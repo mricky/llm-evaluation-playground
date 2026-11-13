@@ -411,6 +411,61 @@ select {
   font-weight: 600;
 }
 
+/* S.C.O.R.E. Justification Panel */
+.score-justification-panel {
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  margin-bottom: 20px;
+}
+
+.panel-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.panel-top label {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.taxonomy-badges {
+  display: flex;
+  gap: 6px;
+}
+
+.tax-badge {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 4px;
+  cursor: help;
+}
+
+.tax-badge.critical {
+  background: rgba(239, 68, 68, 0.15);
+  color: #f87171;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.tax-badge.major {
+  background: rgba(245, 158, 11, 0.15);
+  color: #fbbf24;
+  border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+.tax-badge.minor {
+  background: rgba(16, 185, 129, 0.15);
+  color: #34d399;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
 /* Verdict Bar */
 .verdict-bar {
   display: flex;

@@ -179,6 +179,19 @@
           </div>
         </div>
 
+        <!-- S.C.O.R.E. Justification & Error Taxonomy Panel -->
+        <div class="score-justification-panel">
+          <div class="panel-top">
+            <label for="score-text">✍️ Written Evaluation Justification (S.C.O.R.E. Method):</label>
+            <div class="taxonomy-badges">
+              <span class="tax-badge critical" title="Rating 1: Hallucinations, security leaks, safety violations, negative constraint breach">🔴 Critical Error (-80%)</span>
+              <span class="tax-badge major" title="Rating 2-3: Incomplete response, math calculation defect, O(N^2) bottleneck">🟡 Major Error (-40%)</span>
+              <span class="tax-badge minor" title="Rating 4: Typo, slight markdown styling, verbose closing">🟢 Minor Error (-10%)</span>
+            </div>
+          </div>
+          <textarea id="score-justification" rows="4" placeholder="[S]tance: Model B is substantially better than Model A...&#10;[C]ritical Difference: The primary differentiator is Factual Accuracy...&#10;[O]bjective Evidence: Model A stated '...' whereas Model B...&#10;[R]esolution & [E]valuation Verdict: Although Model B could be more concise, it is the clear operational winner."></textarea>
+        </div>
+
         <div class="verdict-bar">
           <div class="winner-selector">
             <label>Decided Winner:</label>
