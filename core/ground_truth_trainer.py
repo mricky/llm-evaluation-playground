@@ -104,3 +104,4 @@ def grade_trainer_case(
         "model_b_report": align_b,
         "expert_explanation": case_data.get("expert_explanation", "")
     }
+

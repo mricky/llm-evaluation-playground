@@ -125,3 +125,4 @@ def get_recent_evaluations(limit: int = 10, db_path: str = DB_PATH) -> List[Dict
         """, (limit,))
         rows = cursor.fetchall()
         return [dict(row) for row in rows]
+

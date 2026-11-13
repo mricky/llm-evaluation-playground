@@ -365,3 +365,4 @@ async function loadHistory() {
 function initHistoryTab() {
   document.getElementById('refresh-history-btn').addEventListener('click', loadHistory);
 }
+

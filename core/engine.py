@@ -70,7 +70,7 @@ async def call_ollama(
 
 async def call_gemini(
     prompt: str,
-    model: str = "gemini-1.5-flash",
+    model: str = "gemini-flash-lite-latest",
     timeout_sec: float = 30.0
 ) -> Dict[str, Any]:
     """Asynchronously calls Google Gemini API or provides fallback mock."""
@@ -147,7 +147,7 @@ async def call_gemini(
 async def run_arena_comparison(
     prompt: str,
     model_a: str = "llama3:latest",
-    model_b: str = "gemini-1.5-flash"
+    model_b: str = "gemini-flash-lite-latest"
 ) -> Dict[str, Any]:
     """Runs Model A and Model B concurrently using asyncio.gather."""
     res_a, res_b = await asyncio.gather(
@@ -168,3 +168,4 @@ async def run_arena_comparison(
         "model_b": res_b,
         "timestamp": time.time()
     }
+

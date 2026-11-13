@@ -57,3 +57,4 @@ async def test_api_evaluate_endpoint():
     assert data["status"] == "success"
     assert data["comparison"]["score_a"] == 100.0
     assert data["comparison"]["recommended_winner"] == "model_a"
+

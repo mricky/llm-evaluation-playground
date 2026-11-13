@@ -91,3 +91,4 @@ def compare_assessments(
             k: getattr(assessment_b, k).score for k in RUBRIC_WEIGHTS.keys()
         }
     }
+
