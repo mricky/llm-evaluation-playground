@@ -32,7 +32,14 @@
       <section class="prompt-section">
         <div class="section-header">
           <label for="prompt-input">System / User Test Prompt:</label>
-          <span class="hint">Test constraint adherence, complex reasoning, or edge cases.</span>
+          <div class="preset-group">
+            <span class="hint">⚡ Quick Presets:</span>
+            <button type="button" class="preset-btn" data-preset="food">🍔 Food Delivery</button>
+            <button type="button" class="preset-btn" data-preset="logistics">🚚 Logistics & Customs</button>
+            <button type="button" class="preset-btn" data-preset="ecommerce">🛒 E-Commerce</button>
+            <button type="button" class="preset-btn" data-preset="insurance">🛡️ InsurTech Claims</button>
+            <button type="button" class="preset-btn" data-preset="programmer">💻 Code Review</button>
+          </div>
         </div>
         <textarea id="prompt-input" rows="3" placeholder="Enter prompt to evaluate both models concurrently... e.g. 'Extract all shipping items from the text into JSON. CRITICAL: Do NOT include currency symbols.'"></textarea>
 

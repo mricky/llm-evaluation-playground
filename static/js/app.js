@@ -15,15 +15,105 @@ const RUBRIC_WEIGHTS = {
   structure: 0.15
 };
 
+const PRESETS = {
+  food: `[ROLE]
+You are a Customer Support AI for "FoodFleet" on-demand delivery.
+
+[POLICIES & CONSTRAINTS]
+1. Express sincere empathy for the customer's hunger and delay. Do not sound robotic.
+2. STRICT RULE: NEVER promise an exact arrival time (ETA) without confirmed courier GPS telemetry.
+3. STRICT RULE: NEVER process or promise full cash refunds directly; state you are prioritizing escalation with dispatch.
+4. Keep the response concise (under 70 words).
+
+[CUSTOMER MESSAGE]
+"My order is 45 minutes late, the food is probably cold, and nobody is answering!"
+
+[YOUR RESPONSE]`,
+
+  logistics: `[ROLE]
+You are an Enterprise Customs & Freight AI Auditor.
+
+[TASK & INPUT]
+Calculate import duty and VAT for 500 units of HS 8471.30.90 under CIF Jakarta.
+- Unit price FOB: USD 120.00
+- Total Freight: USD 850.00
+- Total Insurance: USD 150.00
+- Customs Duty Rate: 7.5%
+- VAT Rate: 11%
+
+[CONSTRAINTS]
+1. Formula: CIF = FOB + Freight + Insurance. Duty = CIF * Duty Rate. VAT = (CIF + Duty) * VAT Rate.
+2. Output must be strictly valid JSON with keys: 'cif_usd', 'duty_usd', 'vat_usd', 'grand_total_usd'.
+3. CRITICAL NEGATIVE CONSTRAINT: Do NOT include currency symbols ($ or USD) inside numeric values. All numbers must be floats.`,
+
+  ecommerce: `[ROLE]
+You are an E-Commerce Checkout & Promotion Engine AI.
+
+[RULES]
+1. Coupon 'WELCOME20' gives 20% off items, maximum discount $30.
+2. Free Shipping threshold is $100 after discounts are applied; otherwise shipping is $9.99.
+3. Items: 1x Designer Jacket ($140.00), 1x Socks ($15.00). Total before discount: $155.00.
+4. Return exact checkout breakdown in JSON: 'subtotal', 'discount', 'subtotal_after_discount', 'shipping_fee', 'final_total'.
+5. Explain whether free shipping qualified in 1 sentence.`,
+
+  insurance: `[ROLE]
+You are an InsurTech Claims Triage Assistant.
+
+[POLICY CLAUSE]
+"Windstorm deductible is $1,000 or 10% of total appraised damage, whichever is HIGHER."
+Appraised Storm Damage: $8,400.00.
+
+[CONSTRAINTS]
+1. State the calculated deductible and the net payout amount payable to the insured.
+2. Output in exactly ONE concise sentence.
+3. STRICT NEGATIVE CONSTRAINT: Do NOT mention competitor insurance companies (e.g. State Farm, Allstate, Geico).`,
+
+  programmer: `[ROLE]
+You are a Principal Software Engineer performing a rigorous Python Code Review.
+
+[CODE TO AUDIT]
+\`\`\`python
+def process_transactions(user_ids, transactions):
+    results = []
+    for uid in user_ids:
+        user_txs = [t for t in transactions if t["user_id"] == uid]
+        results.append((uid, sum(t["amount"] for t in user_txs)))
+    return results
+\`\`\`
+
+[REVIEW REQUIREMENTS]
+1. Identify the algorithmic Time Complexity in Big-O notation.
+2. Explain the bottleneck and why this causes quadratic latency spikes for 100k records.
+3. Provide an optimized refactored function using an O(N) Hash Map approach with type hints.
+4. Keep the review constructive and technical.`
+};
+
 document.addEventListener('DOMContentLoaded', () => {
   initTabs();
   initSliders();
   initWinnerButtons();
+  initPresets();
   initArenaRun();
   initSaveEvaluation();
   initTrainerMode();
   initHistoryTab();
 });
+
+function initPresets() {
+  const btns = document.querySelectorAll('.preset-btn');
+  const textarea = document.getElementById('prompt-input');
+  btns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const key = btn.dataset.preset;
+      if (PRESETS[key]) {
+        textarea.value = PRESETS[key];
+        textarea.style.height = 'auto';
+        textarea.style.height = (textarea.scrollHeight + 10) + 'px';
+        showToast(`Loaded ${btn.innerText} test prompt!`);
+      }
+    });
+  });
+}
 
 // Toast notification helper
 function showToast(message, type = 'info') {
