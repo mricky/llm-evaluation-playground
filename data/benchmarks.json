@@ -1,0 +1,120 @@
+[
+  {
+    "id": "logistics_peb_01",
+    "title": "Customs PEB Import Duty & Tax Calculation",
+    "domain": "Logistics & Supply Chain",
+    "difficulty": "Hard (Subtle Trap)",
+    "prompt": "Calculate import duty and VAT for 500 units of HS Code 8471.30.90 under CIF Jakarta terms. Unit price is FOB USD 120. Total freight is USD 850, total insurance is USD 150. Import duty rate is 7.5%, and VAT is 11%. Return the result in pure JSON format with keys: 'cif_total_usd', 'duty_usd', 'vat_usd', 'grand_total_usd'. CRITICAL CONSTRAINT: Do NOT include any currency symbols ($) inside numeric values.",
+    "model_a_name": "Llama-3-8B (Local)",
+    "model_a_response": "{\n  \"cif_total_usd\": 61000,\n  \"duty_usd\": \"$4575.00\",\n  \"vat_usd\": \"$7213.25\",\n  \"grand_total_usd\": \"$72788.25\"\n}",
+    "model_b_name": "Gemini-1.5-Flash (Cloud)",
+    "model_b_response": "{\n  \"cif_total_usd\": 61000,\n  \"duty_usd\": 4500.00,\n  \"vat_usd\": 7095.00,\n  \"grand_total_usd\": 72595.00\n}",
+    "expert_winner": "tie",
+    "expert_explanation": "Both models failed critical criteria! Model A violated the strict negative constraint by inserting '$' strings inside JSON numeric values (ruining downstream parser ingestion). Model B followed JSON format cleanly, but calculated duty on FOB (500 * $120 = $60,000) instead of CIF ($61,000), causing an illegal tax under-declaration of $75 duty and $118.25 VAT.",
+    "gold_standard_a": {
+      "factual_accuracy": {
+        "score": 5,
+        "flaw_description": "Math was actually correct based on CIF ($61,000 * 7.5% = $4,575; ($61,000 + $4,575) * 11% = $7,213.25)."
+      },
+      "adherence": {
+        "score": 1,
+        "is_trap": true,
+        "flaw_description": "BLATANT NEGATIVE CONSTRAINT VIOLATION: Inserted '$' inside numeric fields despite explicit capitalized warning."
+      },
+      "completeness": {
+        "score": 5,
+        "flaw_description": "All requested keys provided."
+      },
+      "tone": {
+        "score": 5,
+        "flaw_description": "Neutral JSON only."
+      },
+      "structure": {
+        "score": 2,
+        "flaw_description": "Stringified numbers break numeric schema contract."
+      }
+    },
+    "gold_standard_b": {
+      "factual_accuracy": {
+        "score": 2,
+        "is_trap": true,
+        "flaw_description": "CRITICAL TAX MISCALCULATION: Used FOB ($60,000) instead of CIF ($61,000). Duty calculated as $4,500 instead of $4,575."
+      },
+      "adherence": {
+        "score": 5,
+        "flaw_description": "Respected negative constraint: no currency symbols in values."
+      },
+      "completeness": {
+        "score": 5,
+        "flaw_description": "All required keys included."
+      },
+      "tone": {
+        "score": 5,
+        "flaw_description": "Neutral JSON only."
+      },
+      "structure": {
+        "score": 5,
+        "flaw_description": "Valid pure JSON with correct numeric types."
+      }
+    }
+  },
+  {
+    "id": "insurtech_claim_02",
+    "title": "Property Storm Damage Deductible Triage",
+    "domain": "InsurTech & Claims",
+    "difficulty": "Medium (Trap Clause)",
+    "prompt": "Triage property damage claim #CLM-9012 estimated at $8,400 due to windstorm. The policy policy deductible clause states: 'Deductible is USD 1,000 or 10% of total estimated damage, whichever is HIGHER.' State the net insurance payout payable to the insured in exactly ONE concise sentence. Do NOT mention competitor insurance carriers.",
+    "model_a_name": "Llama-3-8B (Local)",
+    "model_a_response": "The net insurance payout payable to the insured for claim #CLM-9012 is $7,560, after applying the 10% deductible of $840.",
+    "model_b_name": "Gemini-1.5-Flash (Cloud)",
+    "model_b_response": "Based on our comprehensive review of property claim #CLM-9012 with $8,400 in windstorm damages, the deductible applies at $1,000 (which is higher than 10% or $840), leaving a net insurance payout of $7,400 payable to the policyholder. Unlike State Farm or Allstate which often apply flat depreciation schedules, this payout represents full indemnification under standard policy terms.",
+    "expert_winner": "model_b",
+    "expert_explanation": "Model A fell into the 'whichever is HIGHER' trap: 10% is $840, but $1,000 is higher, so the deductible must be $1,000 ($7,400 net). Model A paid out too much ($7,560). Model B got the financial calculation exact, but violated two secondary constraints: it wrote a verbose paragraph instead of one sentence, and explicitly mentioned competitor carriers (State Farm, Allstate). However, in insurance, paying an incorrect settlement amount is a severe regulatory defect.",
+    "gold_standard_a": {
+      "factual_accuracy": {
+        "score": 2,
+        "is_trap": true,
+        "flaw_description": "Fell into trap: 10% ($840) vs $1,000 higher clause. Paid $7,560 instead of correct $7,400."
+      },
+      "adherence": {
+        "score": 5,
+        "flaw_description": "Respected one sentence rule and mentioned no competitors."
+      },
+      "completeness": {
+        "score": 4,
+        "flaw_description": "Answered question but with wrong payout."
+      },
+      "tone": {
+        "score": 5,
+        "flaw_description": "Concise and professional."
+      },
+      "structure": {
+        "score": 5,
+        "flaw_description": "Single clean sentence."
+      }
+    },
+    "gold_standard_b": {
+      "factual_accuracy": {
+        "score": 5,
+        "flaw_description": "Correct financial reasoning: $1,000 deductible applied, payout $7,400."
+      },
+      "adherence": {
+        "score": 2,
+        "is_trap": true,
+        "flaw_description": "Violated 'exactly ONE sentence' constraint AND violated 'Do NOT mention competitor insurance carriers' (mentioned State Farm and Allstate)."
+      },
+      "completeness": {
+        "score": 5,
+        "flaw_description": "Complete breakdown provided."
+      },
+      "tone": {
+        "score": 3,
+        "flaw_description": "Overly marketing/conversational tone."
+      },
+      "structure": {
+        "score": 3,
+        "flaw_description": "Multi-sentence paragraph rather than requested format."
+      }
+    }
+  }
+]

@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LLM Evaluation Arena & FACTS Studio</title>
+  <link rel="stylesheet" href="/static/css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Top Header -->
+    <header class="header">
+      <div class="logo-group">
+        <span class="badge-status">v1.0 Production</span>
+        <h1>LLM Eval Arena <span>// FACTS Studio</span></h1>
+        <p class="subtitle">Concurrent Model Inference & Ground-Truth Evaluator Calibration</p>
+      </div>
+
+      <nav class="nav-tabs">
+        <button class="tab-btn active" data-tab="arena">⚔️ Freeform Arena</button>
+        <button class="tab-btn" data-tab="trainer">🎯 Evaluator Trainer (Quiz Mode)</button>
+        <button class="tab-btn" data-tab="history">📜 Audit History</button>
+      </nav>
+    </header>
+
+    <!-- TAB 1: FREEFORM ARENA -->
+    <main id="arena-tab" class="tab-content active">
+      <!-- Prompt Input Panel -->
+      <section class="prompt-section">
+        <div class="section-header">
+          <label for="prompt-input">System / User Test Prompt:</label>
+          <span class="hint">Test constraint adherence, complex reasoning, or edge cases.</span>
+        </div>
+        <textarea id="prompt-input" rows="3" placeholder="Enter prompt to evaluate both models concurrently... e.g. 'Extract all shipping items from the text into JSON. CRITICAL: Do NOT include currency symbols.'"></textarea>
+
+        <div class="controls-bar">
+          <div class="model-selects">
+            <div class="select-field">
+              <label>Model A (Local Ollama):</label>
+              <select id="model-a-select">
+                <option value="llama3:latest">llama3:latest (8B)</option>
+                <option value="qwen2.5-coder:7b">qwen2.5-coder:7b</option>
+                <option value="gemma4:26b">gemma4:26b</option>
+              </select>
+            </div>
+            <div class="select-field">
+              <label>Model B (Google Gemini):</label>
+              <select id="model-b-select">
+                <option value="gemini-1.5-flash">gemini-1.5-flash</option>
+                <option value="gemini-1.5-pro">gemini-1.5-pro</option>
+              </select>
+            </div>
+          </div>
+          <button id="run-compare-btn" class="btn btn-primary">⚡ Run Concurrent Comparison</button>
+        </div>
+      </section>
+
+      <!-- Split Screen Model Outputs -->
+      <section class="split-screen">
+        <!-- Model A Card -->
+        <div class="model-card" id="card-model-a">
+          <div class="card-header">
+            <div>
+              <span class="model-badge local">LOCAL OLLAMA</span>
+              <h3 id="display-model-a-title">llama3:latest</h3>
+            </div>
+            <div class="meta-stats">
+              <span class="stat-tag" id="stat-latency-a">Latency: -- ms</span>
+              <span class="stat-tag" id="stat-words-a">Tokens: --</span>
+            </div>
+          </div>
+          <div class="response-body">
+            <pre id="output-model-a">Awaiting prompt execution...</pre>
+          </div>
+        </div>
+
+        <!-- Model B Card -->
+        <div class="model-card" id="card-model-b">
+          <div class="card-header">
+            <div>
+              <span class="model-badge cloud">CLOUD GEMINI</span>
+              <h3 id="display-model-b-title">gemini-1.5-flash</h3>
+            </div>
+            <div class="meta-stats">
+              <span class="stat-tag" id="stat-latency-b">Latency: -- ms</span>
+              <span class="stat-tag" id="stat-words-b">Tokens: --</span>
+            </div>
+          </div>
+          <div class="response-body">
+            <pre id="output-model-b">Awaiting prompt execution...</pre>
+          </div>
+        </div>
+      </section>
+
+      <!-- FACTS Evaluation Scorecard -->
+      <section class="facts-scorecard-section">
+        <div class="scorecard-header">
+          <h2>📊 FACTS Rubric Assessment</h2>
+          <p>Score each model on the 5 enterprise pillars (1 = Poor, 5 = Flawless). Composite weights are auto-calculated.</p>
+        </div>
+
+        <div class="rubric-grid">
+          <!-- Model A Scores -->
+          <div class="rubric-column">
+            <div class="col-title">
+              <h3>Model A Evaluation</h3>
+              <div class="score-pill" id="composite-score-a">Score: 100%</div>
+            </div>
+            
+            <div class="dimension-row">
+              <label>Factual Accuracy (30%):</label>
+              <input type="range" min="1" max="5" value="5" class="facts-slider" data-model="a" data-dim="factual_accuracy">
+              <span class="slider-val" id="val-a-factual_accuracy">5 / 5</span>
+            </div>
+            <div class="dimension-row">
+              <label>Adherence to Constraints (25%):</label>
+              <input type="range" min="1" max="5" value="5" class="facts-slider" data-model="a" data-dim="adherence">
+              <span class="slider-val" id="val-a-adherence">5 / 5</span>
+            </div>
+            <div class="dimension-row">
+              <label>Completeness (20%):</label>
+              <input type="range" min="1" max="5" value="5" class="facts-slider" data-model="a" data-dim="completeness">
+              <span class="slider-val" id="val-a-completeness">5 / 5</span>
+            </div>
+            <div class="dimension-row">
+              <label>Tone & Persona (10%):</label>
+              <input type="range" min="1" max="5" value="5" class="facts-slider" data-model="a" data-dim="tone">
+              <span class="slider-val" id="val-a-tone">5 / 5</span>
+            </div>
+            <div class="dimension-row">
+              <label>Structure & Formatting (15%):</label>
+              <input type="range" min="1" max="5" value="5" class="facts-slider" data-model="a" data-dim="structure">
+              <span class="slider-val" id="val-a-structure">5 / 5</span>
+            </div>
+          </div>
+
+          <!-- Model B Scores -->
+          <div class="rubric-column">
+            <div class="col-title">
+              <h3>Model B Evaluation</h3>
+              <div class="score-pill" id="composite-score-b">Score: 100%</div>
+            </div>
+            
+            <div class="dimension-row">
+              <label>Factual Accuracy (30%):</label>
+              <input type="range" min="1" max="5" value="5" class="facts-slider" data-model="b" data-dim="factual_accuracy">
+              <span class="slider-val" id="val-b-factual_accuracy">5 / 5</span>
+            </div>
+            <div class="dimension-row">
+              <label>Adherence to Constraints (25%):</label>
+              <input type="range" min="1" max="5" value="5" class="facts-slider" data-model="b" data-dim="adherence">
+              <span class="slider-val" id="val-b-adherence">5 / 5</span>
+            </div>
+            <div class="dimension-row">
+              <label>Completeness (20%):</label>
+              <input type="range" min="1" max="5" value="5" class="facts-slider" data-model="b" data-dim="completeness">
+              <span class="slider-val" id="val-b-completeness">5 / 5</span>
+            </div>
+            <div class="dimension-row">
+              <label>Tone & Persona (10%):</label>
+              <input type="range" min="1" max="5" value="5" class="facts-slider" data-model="b" data-dim="tone">
+              <span class="slider-val" id="val-b-tone">5 / 5</span>
+            </div>
+            <div class="dimension-row">
+              <label>Structure & Formatting (15%):</label>
+              <input type="range" min="1" max="5" value="5" class="facts-slider" data-model="b" data-dim="structure">
+              <span class="slider-val" id="val-b-structure">5 / 5</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="verdict-bar">
+          <div class="winner-selector">
+            <label>Decided Winner:</label>
+            <div class="btn-group">
+              <button class="winner-btn" data-winner="model_a">🏆 Model A</button>
+              <button class="winner-btn" data-winner="tie">🤝 Tie / Indifferent</button>
+              <button class="winner-btn" data-winner="model_b">🏆 Model B</button>
+            </div>
+          </div>
+          <button id="save-eval-btn" class="btn btn-success">💾 Save Evaluation to Audit Log</button>
+        </div>
+      </section>
+    </main>
+
+    <!-- TAB 2: EVALUATOR TRAINER (QUIZ MODE) -->
+    <main id="trainer-tab" class="tab-content">
+      <section class="trainer-header-card">
+        <h2>🎯 Evaluator Precision Calibration Mode</h2>
+        <p>Test your critical attention to detail. Evaluate the pre-curated enterprise test cases below. After submitting, your scores will be tested against <strong>Hidden Expert Ground Truth</strong> to calculate your Evaluator Alignment Score and reveal hidden traps.</p>
+        
+        <div class="case-picker">
+          <label>Select Enterprise Benchmark Case:</label>
+          <select id="trainer-case-select">
+            <option value="">-- Choose a benchmark challenge --</option>
+          </select>
+        </div>
+      </section>
+
+      <section id="trainer-workspace" class="trainer-workspace" style="display: none;">
+        <div class="prompt-review-card">
+          <div class="tag-row">
+            <span class="domain-badge" id="trainer-domain">Domain</span>
+            <span class="diff-badge" id="trainer-difficulty">Difficulty</span>
+          </div>
+          <h3 id="trainer-case-title">Case Title</h3>
+          <p id="trainer-prompt-text" class="prompt-display"></p>
+        </div>
+
+        <div class="split-screen">
+          <div class="model-card">
+            <div class="card-header">
+              <h3 id="trainer-model-a-name">Model A</h3>
+            </div>
+            <div class="response-body">
+              <pre id="trainer-model-a-resp"></pre>
+            </div>
+          </div>
+          <div class="model-card">
+            <div class="card-header">
+              <h3 id="trainer-model-b-name">Model B</h3>
+            </div>
+            <div class="response-body">
+              <pre id="trainer-model-b-resp"></pre>
+            </div>
+          </div>
+        </div>
+
+        <div class="trainer-action-bar">
+          <p>Carefully read both responses above, set your FACTS ratings, choose your winner, and then submit to calibrate!</p>
+          <button id="submit-trainer-btn" class="btn btn-warning">🔍 Reveal Gold Standard & Grade My Precision</button>
+        </div>
+
+        <!-- Hidden Calibration Results Panel -->
+        <div id="trainer-results-card" class="trainer-results-card" style="display: none;">
+          <div class="result-top">
+            <div class="alignment-gauge">
+              <span class="gauge-label">Your Alignment Score</span>
+              <div class="gauge-value" id="res-alignment-val">95%</div>
+            </div>
+            <div class="verdict-text-block">
+              <h3 id="res-verdict-title">Master Evaluator</h3>
+              <p id="res-expert-explanation"></p>
+            </div>
+          </div>
+
+          <div class="feedback-columns">
+            <div class="feedback-col traps-box">
+              <h4>🎯 Traps Caught</h4>
+              <ul id="res-traps-list"></ul>
+            </div>
+            <div class="feedback-col critiques-box">
+              <h4>⚠️ Calibration Feedback</h4>
+              <ul id="res-critiques-list"></ul>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- TAB 3: AUDIT HISTORY -->
+    <main id="history-tab" class="tab-content">
+      <section class="history-panel">
+        <div class="section-header">
+          <h2>📜 Evaluation History & Audit Records</h2>
+          <button id="refresh-history-btn" class="btn btn-outline">🔄 Refresh</button>
+        </div>
+        <div class="table-container">
+          <table class="history-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Timestamp</th>
+                <th>Model A</th>
+                <th>Score A</th>
+                <th>Model B</th>
+                <th>Score B</th>
+                <th>Winner</th>
+                <th>Prompt Preview</th>
+              </tr>
+            </thead>
+            <tbody id="history-table-body">
+              <tr><td colspan="8" style="text-align: center;">Loading history...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast"></div>
+  </div>
+
+  <script src="/static/js/app.js"></script>
+</body>
+</html>
