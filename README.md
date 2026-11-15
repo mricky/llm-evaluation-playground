@@ -4,6 +4,7 @@
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.128-009688.svg)](https://fastapi.tiangolo.com/)
 [![Tests](https://img.shields.io/badge/pytest-10%20passed-success.svg)](tests/)
 [![Rubric](https://img.shields.io/badge/rubric-FACTS-orange.svg)](#the-facts-evaluation-rubric)
+[![AI PR Gatekeeper](https://github.com/mricky/llm-evaluation-playground/actions/workflows/ai-gatekeeper.yml/badge.svg)](https://github.com/mricky/llm-evaluation-playground/actions)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
 > **Enterprise Multi-Model Inference & Ground-Truth Evaluator Calibration Studio**  
