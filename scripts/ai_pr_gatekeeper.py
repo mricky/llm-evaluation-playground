@@ -56,8 +56,8 @@ def analyze_diff_with_gemini(diff_text):
             "findings": []
         }
 
-    # Use gemini-2.0-flash or gemini-1.5-flash
-    model_name = "gemini-2.0-flash"
+    # Use gemini-3-flash-preview with automatic fallback
+    model_name = "gemini-3-flash-preview"
     url = f"https://generativelanguage.googleapis.com/v1beta/models/{model_name}:generateContent?key={GEMINI_API_KEY}"
 
     prompt = f"""
@@ -104,8 +104,8 @@ Here is the Git Diff to evaluate:
     try:
         res = requests.post(url, json=payload, headers={"Content-Type": "application/json"}, timeout=45)
         if res.status_code != 200:
-            # Fallback to gemini-1.5-flash
-            url_fallback = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={GEMINI_API_KEY}"
+            # Fallback to gemini-3.5-flash-lite
+            url_fallback = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:generateContent?key={GEMINI_API_KEY}"
             res = requests.post(url_fallback, json=payload, headers={"Content-Type": "application/json"}, timeout=45)
         
         res.raise_for_status()
@@ -198,3 +198,4 @@ if __name__ == "__main__":
     diff_content = get_clean_diff()
     eval_result = analyze_diff_with_gemini(diff_content)
     report_to_github(eval_result)
+
